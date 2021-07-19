@@ -4,7 +4,7 @@ from scipy.fft import fft,fftfreq,ifft
 import copy
 from scipy.signal import chirp, find_peaks, peak_widths
 
-def FT(data,dt=1,norm=False,n=None, pad=False):
+def FT(data,dt=1,norm=False,n=None, pad=0):
     """
     Fast discrete Fourier transform through scipy's FFTPACK
 
@@ -22,6 +22,8 @@ def FT(data,dt=1,norm=False,n=None, pad=False):
     n : int
         number of points desired for the FFT, truncates or zero-pads
         default=None [len(data) is used]
+    pad : int
+        amount of 0 padding to be included in the data.
 
     Returns
     -------
@@ -37,10 +39,10 @@ def FT(data,dt=1,norm=False,n=None, pad=False):
     if not n:
         n = len(data)
 
-    if pad:
-        data = np.insert(data, n,np.zeros(50000)) # zero-pad
+    
+    dip_pad = np.insert(data, n,np.zeros(pad)) # zero-pad
 
-    FT = fft(data,n=n)[1:n//2]
+    FT = fft(dip_pad,n=n)[1:n//2]
     freq = fftfreq(n)[1:n//2]*2*np.pi/dt
 
     if norm: # normalize real and imaginary components separately
